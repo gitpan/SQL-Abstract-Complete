@@ -6,6 +6,8 @@ use Storable 'dclone';
 use vars '@ISA';
 @ISA = 'SQL::Abstract';
 
+our $VERSION = '1.03';
+
 sub new {
     my $self = shift;
     $self = $self->SUPER::new(@_);
