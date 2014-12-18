@@ -8,7 +8,7 @@ use Storable 'dclone';
 use vars '@ISA';
 @ISA = 'SQL::Abstract';
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 sub new {
     my $self = shift;
@@ -127,7 +127,9 @@ sub select {
                 _wipe_space($group_by);
             } : undef ),
             ( ( $meta->{'having'} ) ? do {
-                ( my $having = scalar( $self->where( $meta->{'having'} ) ) ) =~ s/\s*WHERE/HAVING/;
+                my ( $having, @having_bind ) = $self->where( $meta->{'having'} );
+                $having =~ s/\s*WHERE/HAVING/;
+                push( @bind, @having_bind ) if ( scalar(@having_bind) );
                 _wipe_space($having);
             } : undef ),
             ( ( $meta->{'order_by'} ) ? _wipe_space( $self->_order_by( $meta->{'order_by'} ) ) : undef ),
